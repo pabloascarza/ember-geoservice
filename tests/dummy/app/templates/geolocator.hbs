@@ -1,7 +1,7 @@
 <button type="button" {{action "getUserLocation"}}>Geolocate Me!</button>
 <button type="button" {{action "trackUserLocation"}}>Track My Location</button>
-{{#if userLocation}}
+{{#if this.userLocation}}
   <p>
-    Your geolocation is: {{userLocation}}
+    Your geolocation is: {{this.userLocation}}
   </p>
 {{/if}}
