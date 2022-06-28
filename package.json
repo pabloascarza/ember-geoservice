@@ -1,6 +1,6 @@
 {
   "name": "ember-geoservice",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Geolocation service for Ember.js web apps",
   "keywords": [
     "ember-addon",
