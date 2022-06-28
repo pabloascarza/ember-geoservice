@@ -1,5 +1,5 @@
 {
-  "name": "ember-geosevice",
+  "name": "ember-geoservice",
   "version": "1.0.0",
   "description": "Geolocation service for Ember.js web apps",
   "keywords": [

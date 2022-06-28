@@ -1,1 +1,1 @@
-export { default } from 'ember-cli-geo/services/geolocation';
+export { default } from 'ember-geoservice/services/geolocation';
