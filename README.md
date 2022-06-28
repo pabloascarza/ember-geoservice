@@ -4,7 +4,17 @@
 This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app.
 It is production-ready and backwards compatible.
 
-## Installation
+
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v3.24 or above
+* Ember CLI v3.24 or above
+* Node.js v12 or above
+
+
+Installation
+------------------------------------------------------------------------------
 
 ```
 ember install ember-cli-geo
