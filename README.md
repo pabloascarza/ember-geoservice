@@ -1,7 +1,7 @@
 # ember-cli-geo
-[![Code Climate](https://codeclimate.com/github/igorpreston/ember-cli-geo/badges/gpa.svg)](https://codeclimate.com/github/igorpreston/ember-cli-geo) [![Build Status](https://travis-ci.org/igorpreston/ember-cli-geo.svg)](https://travis-ci.org/igorpreston/ember-cli-geo)
+[![Code Climate](https://codeclimate.com/github/pabloascarza/ember-geoservice/badges/gpa.svg)](https://codeclimate.com/github/pabloascarza/ember-geoservice) [![Build Status](https://travis-ci.org/pabloascarza/ember-geoservice.svg)](https://travis-ci.org/pabloascarza/ember-geoservice)
 
-This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app.
+This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app. Forked from https://github.com/igorpreston/ember-cli-geo but updated and maintained.
 It is production-ready and backwards compatible.
 
 
@@ -17,15 +17,15 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install ember-cli-geo
+ember install ember-geoservice
 ```
 
 ## Usage
 #### getLocation()
-`getLocation()` gets user location from the browser and writes its coordinates to `currentLocation` property on the service. Accepts __geoOptions__ as an argument. Returns an __Ember.RSVP.Promise__ which is either resolved with __geoObject__ containing all data about user location or is rejected with __reason__ which explains why geolocation failed.
+`getLocation()` gets user location from the browser and writes its coordinates to `currentLocation` tracked property on the service. Accepts __geoOptions__ as an argument. Returns an Promise which is either resolved with __geoObject__ containing all data about user location or is rejected with __reason__ which explains why geolocation failed.
 It is used like this:
 ```js
-this.get('geolocation').getLocation().then(function(geoObject) {
+this.geolocation.getLocation().then(function(geoObject) {
   // do anything with geoObject here
   // you can also access currentLocation property and manipulate its data however you like
 });
@@ -35,20 +35,20 @@ It emits an event `geolocationSuccess` with an object describing the geolocation
 #### trackLocation()
 `trackLocation()` gets user location and setups a watcher which observes any changes occuring to user location. It then constantly updates `currentLocation` with the most recent location coordinates.
 
-It accepts __geoOptions__ as an argument. Returns an __Ember.RSVP.Promise__ which is either resolved with __geoObject__ containing all data about user location or is rejected with __reason__ which explains why geolocation failed.
+It accepts __geoOptions__ as an argument. Returns an Promise which is either resolved with __geoObject__ containing all data about user location or is rejected with __reason__ which explains why geolocation failed.
 It accepts an optional __callback__ function, that is called whenever the position is updated.
 It emits an event `geolocationSuccess` with an object describing the geolocation whenever a new position is available. If it fails, it emits an event `geolocationFail` with a reason.
 
 It is used like this:
 ```js
-this.get('geolocation').trackLocation().then(function(geoObject) {
+this.geolocation.trackLocation().then(function(geoObject) {
   // do anything with geoObject here
   // currentLocation is constantly updated if user location is changed
 });
 // or
-this.get('geolocation').trackLocation(null, (geoObject) => { /* will be called with new positiond */ })
+this.geolocation.trackLocation(null, (geoObject) => { /* will be called with new positiond */ })
 // or
-const service = this.get('geolocation');
+const service = this.geolocation;
 service.on('geolocationSuccess', (geoObject) => { { /* will be called with new position */);
 ```
 It corresponds to _watchPosition() in HTML5 Geolocation API_. Learn more at [watchPosition() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
@@ -59,14 +59,14 @@ It accepts an optional boolean parameter that clears `currentLocation` if it's t
 
 It is used like this:
 ```js
-this.get('geolocation').stopTracking(true);
+this.geolocation.stopTracking(true);
 ```
 It corresponds to _watchPosition() in HTML5 Geolocation API_. Learn more at [clearWatch() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/clearWatch).
 #### currentLocation
-`currentLocation` is a property of geolocation service which stores the __array__ of user location coordinates in the format of __[lat, lon]__.
+`currentLocation` is a tracked property of geolocation service which stores the __array__ of user location coordinates in the format of __[lat, lon]__.
 It is used like this:
-```js
-this.get('geolocation').get('currentLocation');
+ ```js
+this.geolocation.currentLocation;
 ```
 #### geoObject
 `geoObject` is an object which contains all data about user location. Both `getLocation()` and `trackLocation()` promises are resolved with it. It looks like this:
@@ -103,45 +103,43 @@ It corresponds to _PositionOptions object in HMTL5 Geolocation API_. Learn more 
 #### Setup geolocation service
 In order to use geolocation inside of your _Ember.Route_ you should directly inject it to the one:
 ```js
-export default Ember.Route.extend({
-  geolocation: Ember.inject.service()
-});
+export default class GeoRoute extends Route {
+  @service geolocation;
+};
 ```
 
-#### Get user location and display it in your template
+#### Get user location and display it in your component template
 You need to implement a custom action which will call the geolocation service.
-In your route:
+In your component:
 ```js
-// app/routes/geolocator.js
+// app/components/geolocation-test.js
 
-export default Ember.Route.extend({
-
-  actions: {
-    getUserLocation: function() {
-      this.get('geolocation').getLocation().then(function(geoObject) {
-        var currentLocation = this.get('geolocation').get('currentLocation');
-        this.controllerFor('geolocator').set('userLocation', currentLocation);
-      });
-    }
+export default class GeolocationTest extends Component {
+  @service geolocation;
+  
+  @action getUserLocation() {
+    this.showLoader = true;
+    this.geolocation.getLocation({timeout:10000}).then(
+      () => {
+        this.showLoader = false;
+      },
+      (reason) => {
+        this.showLoader = false;
+        // eslint-disable-next-line no-console
+        console.error('Geolocation failed because ' + reason);
+      }
+    );
   }
-});
-```
+}
 
-In your controller:
-```js
-// app/controllers/geolocator.js
-
-export default Ember.Controller.extend({
-  userLocation: null
-});
 ```
 
 In your template:
 ```js
 // app/templates/geolocator.hbs
 
-<button type="button" {{action 'getUserLocation'}}>Geolocate me!</button>
-{{#if userLocation}}
-  {{userLocation}}
+<button type="button" {{on "click" this.getUserLocation}}>Geolocate me!</button>
+{{#if this.geolocation.currentLocation}}
+  {{this.geolocation.currentLocation}}
 {{/if}}
 ```
