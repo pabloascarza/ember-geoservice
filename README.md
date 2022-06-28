@@ -1,6 +1,6 @@
 # ember-geoservice
 
-This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app. Forked from https://github.com/igorpreston/ember-cli-geo but updated and maintained. Thanks to  [@igorpreston](https://github.com/igorpreston) for the code base for this addon.
+This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app. Forked from https://github.com/igorpreston/ember-cli-geo but updated and maintained. Thanks to  [@igorpreston](https://github.com/igorpreston) for the code base to this addon.
 It is production-ready and backwards compatible.
 
 
