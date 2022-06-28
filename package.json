@@ -1,6 +1,6 @@
 {
-  "name": "ember-cli-geo",
-  "version": "4.0.0",
+  "name": "ember-geosevice",
+  "version": "1.0.0",
   "description": "Geolocation service for Ember.js web apps",
   "keywords": [
     "ember-addon",
@@ -10,10 +10,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/igorpreston/ember-cli-geo"
+    "url": "https://github.com/pabloascarza/ember-geoservice"
   },
   "license": "MIT",
-  "author": "Igor Preston igorpreston@gmail.com",
+  "author": "Pablo Ascarza pabloqac87@gmail.com and Igor Preston igorpreston@gmail.com",
   "directories": {
     "doc": "doc",
     "test": "tests"
