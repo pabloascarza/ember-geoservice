@@ -4,31 +4,31 @@ import { setupTest } from 'ember-mocha';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 
 describe('GeolocationService', function () {
-  setupTest('service:geolocation');
+  setupTest();
 
   it('exists', function () {
-    let service = this.subject();
+    let service = this.owner.lookup('service:geolocation');
     expect(service).to.be.ok;
   });
 
   describe('checks if it', function () {
     it('responds to `geolocation`', function () {
-      let service = this.subject();
+      let service = this.owner.lookup('service:geolocation');
       expect(service).itself.to.respondTo('getLocation');
     });
 
     it('responds to `trackLocation`', function () {
-      let service = this.subject();
+      let service = this.owner.lookup('service:geolocation');
       expect(service).itself.to.respondTo('trackLocation');
     });
 
     it('has property `currentLocation`', function () {
-      let service = this.subject();
+      let service = this.owner.lookup('service:geolocation');
       expect(service).to.have.property('currentLocation');
     });
 
     it('responds to `stopTracking`', function () {
-      let service = this.subject();
+      let service = this.owner.lookup('service:geolocation');
       expect(service).to.have.property('stopTracking');
     });
   });
@@ -51,7 +51,7 @@ describe('GeolocationService', function () {
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
 
-      sandbox.stub(window.navigator.geolocation, 'getCurrentPosition', (fn) => {
+      sandbox.stub(window.navigator.geolocation, 'getCurrentPosition').callsFake((fn) => {
         fn.call(null, geoObject);
       });
     });
@@ -61,7 +61,7 @@ describe('GeolocationService', function () {
     });
 
     it('gets user geolocation from window.navigator', function (done) {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
 
       service.getLocation().then(function (result) {
         expect(result).to.equal(geoObject);
@@ -70,7 +70,7 @@ describe('GeolocationService', function () {
     });
 
     it("sets user's current location in the `currentLocation` property", function (done) {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
 
       expect(service).to.have.property('currentLocation').that.is.null;
       service.getLocation().then(function () {
@@ -82,9 +82,9 @@ describe('GeolocationService', function () {
     });
 
     it("#startTracking receives a callback function that's called whenever a new position is tracked", function () {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
 
-      sandbox.stub(window.navigator.geolocation, 'watchPosition', (fn) => {
+      sandbox.stub(window.navigator.geolocation, 'watchPosition').callsFake((fn) => {
         fn.call(null, geoObject);
         fn.call(null, geoObject);
         fn.call(null, geoObject);
@@ -101,7 +101,7 @@ describe('GeolocationService', function () {
     });
 
     it('#stopTracking removes tracker from browser loop', function () {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
       let spy = sandbox.spy(window.navigator.geolocation, 'clearWatch');
 
       service.stopTracking();
@@ -113,7 +113,7 @@ describe('GeolocationService', function () {
     });
 
     it('#stopTracking can clear currentLocation', function () {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
       let spy = sandbox.spy(window.navigator.geolocation, 'clearWatch');
 
       service.stopTracking(true);
@@ -129,14 +129,14 @@ describe('GeolocationService', function () {
     });
 
     it('fails if the browser cannot provide location', function (done) {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
       let successCbCalled = false;
 
       sandbox.restore();
       sandbox.stub(
         window.navigator.geolocation,
-        'getCurrentPosition',
-        (success, fail) => {
+        'getCurrentPosition')
+        .callsFake((success, fail) => {
           // PositionError is a number `short` representing the error
           fail.call(null, 1);
         }
@@ -162,7 +162,7 @@ describe('GeolocationService', function () {
     });
 
     it("emits an event `geolocationSuccess` with the position when it's fetched", function (done) {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
 
       service.on('geolocationSuccess', (result) => {
         expect(result).to.equal(
@@ -176,25 +176,27 @@ describe('GeolocationService', function () {
     });
 
     it('emits an event `geolocationFail` with the error when it fails', function (done) {
-      const service = this.subject();
+      const service = this.owner.lookup('service:geolocation');
 
       sandbox.restore();
       sandbox.stub(
         window.navigator.geolocation,
-        'getCurrentPosition',
-        (success, fail) => {
+        'getCurrentPosition')
+        .callsFake((success, fail) => {
           // PositionError is a number `short` representing the error
           fail.call(null, 1);
         }
       );
 
-      service.on('geolocationFail', (result) => {
+      const callback = (result) => {
         expect(result).to.equal(1, 'results should be sent to the listener');
-        service.off('geolocationFail');
+        service.off('geolocationFail', callback);
         done();
-      });
+      }
 
-      service.getLocation();
+      service.on('geolocationFail', callback);
+
+      service.getLocation({timeout:1000});
     });
   });
 });

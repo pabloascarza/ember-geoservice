@@ -1,5 +1,4 @@
 import { assert } from '@ember/debug';
-import { Promise as EmberPromise } from 'rsvp';
 import { computed } from '@ember/object';
 import Evented from '@ember/object/evented';
 import Service from '@ember/service';
@@ -24,7 +23,7 @@ export default Service.extend(Evented, {
   currentLocation: null,
 
   getLocation(geoOptions) {
-    return new EmberPromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.geolocator.getCurrentPosition(
         (geoObject) => {
           this._handleNewPosition(geoObject);
@@ -52,7 +51,7 @@ export default Service.extend(Evented, {
     }
     this.set('trackingCallback', callback);
 
-    return new EmberPromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       watcherId = this.geolocator.watchPosition(
         (geoObject) => {
           // make sure this logic is run only once
