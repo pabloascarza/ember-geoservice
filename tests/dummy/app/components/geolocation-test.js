@@ -13,7 +13,7 @@ export default class GeolocationTest extends Component {
     this.geolocation.getLocation({timeout:10000}).then(
       () => {
         this.showLoader = false;
-        let currentLocation = this.geolocation.get('currentLocation');
+        let currentLocation = this.geolocation.currentLocation;
         this.userLocation = currentLocation;
       },
       (reason) => {
@@ -29,7 +29,7 @@ export default class GeolocationTest extends Component {
     this.geolocation.trackLocation({timeout:10000}, this.trackedCallback).then(
       () => {
         this.showLoader = false;
-        let currentLocation = this.geolocation.get('currentLocation');
+        let currentLocation = this.geolocation.currentLocation;
         this.userLocation = currentLocation;
       },
       (reason) => {
@@ -41,6 +41,6 @@ export default class GeolocationTest extends Component {
   }
 
   trackedCallback () {
-    window.alert("Being tracked");
+    window.alert('Being tracked');
   }
 }
