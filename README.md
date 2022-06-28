@@ -1,7 +1,7 @@
 # ember-geoservice
 [![Code Climate](https://codeclimate.com/github/pabloascarza/ember-geoservice/badges/gpa.svg)](https://codeclimate.com/github/pabloascarza/ember-geoservice) [![Build Status](https://travis-ci.org/pabloascarza/ember-geoservice.svg)](https://travis-ci.org/pabloascarza/ember-geoservice)
 
-This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app. Forked from https://github.com/igorpreston/ember-cli-geo but updated and maintained.
+This addon is a go-to solution for integrating HTML5 Geolocation API into your Ember.js web app. Forked from https://github.com/igorpreston/ember-cli-geo but updated and maintained. Thanks to @igorpreston for the code base for this addon.
 It is production-ready and backwards compatible.
 
 
