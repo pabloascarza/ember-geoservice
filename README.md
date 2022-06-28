@@ -136,7 +136,7 @@ export default class GeolocationTest extends Component {
 
 In your template:
 ```js
-// app/templates/geolocator.hbs
+// app/components/geolocation-test.hbs
 
 <button type="button" {{on "click" this.getUserLocation}}>Geolocate me!</button>
 {{#if this.geolocation.currentLocation}}
