@@ -8,7 +8,7 @@ export default class Geolocation extends Service.extend(Evented) {
   trackingCallback = null;
   @tracked watcherId = null;
 
-  get geolocator () {
+  get geolocator() {
     return window.navigator.geolocation;
   }
 
@@ -89,4 +89,4 @@ export default class Geolocation extends Service.extend(Evented) {
       this._handleNewPosition(null);
     }
   }
-};
+}

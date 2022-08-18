@@ -10,7 +10,7 @@ export default class GeolocationTest extends Component {
 
   @action getUserLocation() {
     this.showLoader = true;
-    this.geolocation.getLocation({timeout:10000}).then(
+    this.geolocation.getLocation({ timeout: 10000 }).then(
       () => {
         this.showLoader = false;
         let currentLocation = this.geolocation.currentLocation;
@@ -26,21 +26,23 @@ export default class GeolocationTest extends Component {
 
   @action trackUserLocation() {
     this.showLoader = true;
-    this.geolocation.trackLocation({timeout:10000}, this.trackedCallback).then(
-      () => {
-        this.showLoader = false;
-        let currentLocation = this.geolocation.currentLocation;
-        this.userLocation = currentLocation;
-      },
-      (reason) => {
-        this.showLoader = false;
-        // eslint-disable-next-line no-console
-        console.error('Geolocation failed because ' + reason);
-      }
-    );
+    this.geolocation
+      .trackLocation({ timeout: 10000 }, this.trackedCallback)
+      .then(
+        () => {
+          this.showLoader = false;
+          let currentLocation = this.geolocation.currentLocation;
+          this.userLocation = currentLocation;
+        },
+        (reason) => {
+          this.showLoader = false;
+          // eslint-disable-next-line no-console
+          console.error('Geolocation failed because ' + reason);
+        }
+      );
   }
 
-  trackedCallback () {
+  trackedCallback() {
     window.alert('Being tracked');
   }
 }
