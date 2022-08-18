@@ -1,39 +1,43 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { setupTest } from 'ember-mocha';
-import { describe, it, beforeEach, afterEach } from 'mocha';
+import { setupTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 
-describe('GeolocationService', function () {
-  setupTest();
+module('Unit | Service | GeolocationService', function(hooks) {
+  setupTest(hooks);
 
-  it('exists', function () {
+  test('exists', function (assert) {
     let service = this.owner.lookup('service:geolocation');
-    expect(service).to.be.ok;
+    assert.ok(service);
   });
 
-  describe('checks if it', function () {
-    it('responds to `geolocation`', function () {
+  module('checks if it', function (hooks) {
+    test('responds to `geolocation`', function (assert) {
+      assert.expect(0);
       let service = this.owner.lookup('service:geolocation');
       expect(service).itself.to.respondTo('getLocation');
     });
 
-    it('responds to `trackLocation`', function () {
+    test('responds to `trackLocation`', function (assert) {
+      assert.expect(0);
       let service = this.owner.lookup('service:geolocation');
       expect(service).itself.to.respondTo('trackLocation');
     });
 
-    it('has property `currentLocation`', function () {
+    test('has property `currentLocation`', function (assert) {
+      assert.expect(0);
       let service = this.owner.lookup('service:geolocation');
       expect(service).to.have.property('currentLocation');
     });
 
-    it('responds to `stopTracking`', function () {
+    test('responds to `stopTracking`', function (assert) {
+      assert.expect(0);
       let service = this.owner.lookup('service:geolocation');
       expect(service).to.have.property('stopTracking');
     });
   });
 
-  describe('determines geolocation and', function () {
+  module('determines geolocation and', function (hooks) {
     const geoObject = {
       coords: {
         accuracy: 100,
@@ -48,19 +52,23 @@ describe('GeolocationService', function () {
     };
     let sandbox;
 
-    beforeEach(function () {
+    hooks.beforeEach(function () {
       sandbox = sinon.sandbox.create();
 
-      sandbox.stub(window.navigator.geolocation, 'getCurrentPosition').callsFake((fn) => {
-        fn.call(null, geoObject);
-      });
+      sandbox
+        .stub(window.navigator.geolocation, 'getCurrentPosition')
+        .callsFake((fn) => {
+          fn.call(null, geoObject);
+        });
     });
 
-    afterEach(function () {
+    hooks.afterEach(function () {
       sandbox.restore();
     });
 
-    it('gets user geolocation from window.navigator', function (done) {
+    test('gets user geolocation from window.navigator', function (assert) {
+      const done = assert.async();
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
 
       service.getLocation().then(function (result) {
@@ -69,7 +77,9 @@ describe('GeolocationService', function () {
       });
     });
 
-    it("sets user's current location in the `currentLocation` property", function (done) {
+    test("sets user's current location in the `currentLocation` property", function (assert) {
+      const done = assert.async();
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
 
       expect(service).to.have.property('currentLocation').that.is.null;
@@ -81,14 +91,17 @@ describe('GeolocationService', function () {
       });
     });
 
-    it("#startTracking receives a callback function that's called whenever a new position is tracked", function () {
+    test("#startTracking receives a callback function that's called whenever a new position is tracked", function (assert) {
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
 
-      sandbox.stub(window.navigator.geolocation, 'watchPosition').callsFake((fn) => {
-        fn.call(null, geoObject);
-        fn.call(null, geoObject);
-        fn.call(null, geoObject);
-      });
+      sandbox
+        .stub(window.navigator.geolocation, 'watchPosition')
+        .callsFake((fn) => {
+          fn.call(null, geoObject);
+          fn.call(null, geoObject);
+          fn.call(null, geoObject);
+        });
 
       let spy = sinon.spy();
 
@@ -100,7 +113,8 @@ describe('GeolocationService', function () {
       );
     });
 
-    it('#stopTracking removes tracker from browser loop', function () {
+    test('#stopTracking removes tracker from browser loop', function (assert) {
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
       let spy = sandbox.spy(window.navigator.geolocation, 'clearWatch');
 
@@ -112,7 +126,8 @@ describe('GeolocationService', function () {
       );
     });
 
-    it('#stopTracking can clear currentLocation', function () {
+    test('#stopTracking can clear currentLocation', function (assert) {
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
       let spy = sandbox.spy(window.navigator.geolocation, 'clearWatch');
 
@@ -128,19 +143,19 @@ describe('GeolocationService', function () {
       );
     });
 
-    it('fails if the browser cannot provide location', function (done) {
+    test('fails if the browser cannot provide location', function (assert) {
+      const done = assert.async();
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
       let successCbCalled = false;
 
       sandbox.restore();
-      sandbox.stub(
-        window.navigator.geolocation,
-        'getCurrentPosition')
+      sandbox
+        .stub(window.navigator.geolocation, 'getCurrentPosition')
         .callsFake((success, fail) => {
           // PositionError is a number `short` representing the error
           fail.call(null, 1);
-        }
-      );
+        });
 
       service.getLocation().then(
         () => {
@@ -161,7 +176,9 @@ describe('GeolocationService', function () {
       );
     });
 
-    it("emits an event `geolocationSuccess` with the position when it's fetched", function (done) {
+    test("emits an event `geolocationSuccess` with the position when it's fetched", function (assert) {
+      const done = assert.async();
+      assert.expect(0);
       const service = this.owner.lookup('service:geolocation');
 
       service.on('geolocationSuccess', (result) => {
@@ -174,29 +191,33 @@ describe('GeolocationService', function () {
 
       service.getLocation();
     });
-
-    it('emits an event `geolocationFail` with the error when it fails', function (done) {
+    
+    test('emits an event `geolocationFail` with the error when it fails', function (assert) {
+      const done = assert.async();
       const service = this.owner.lookup('service:geolocation');
 
       sandbox.restore();
-      sandbox.stub(
-        window.navigator.geolocation,
-        'getCurrentPosition')
+      sandbox
+        .stub(window.navigator.geolocation, 'getCurrentPosition')
         .callsFake((success, fail) => {
           // PositionError is a number `short` representing the error
           fail.call(null, 1);
-        }
-      );
+        });
 
       const callback = (result) => {
-        expect(result).to.equal(1, 'results should be sent to the listener');
+        assert.equal(result, 1);
         service.off('geolocationFail', callback);
         done();
-      }
+      };
 
       service.on('geolocationFail', callback);
 
-      service.getLocation({timeout:1000});
+      service.getLocation({ timeout: 1000 }).catch(e => {
+        if (e === 1) {
+          return true
+        }
+        throw e;
+      });
     });
   });
 });
